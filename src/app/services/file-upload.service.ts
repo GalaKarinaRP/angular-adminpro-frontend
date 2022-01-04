@@ -40,10 +40,7 @@ export class FileUploadService {
       }else{
         console.log(data.msg);
         return false;
-      }
-
-      return 'nombre de la imagen';
-      
+      }      
 
     }catch(error){
       console.log(error);

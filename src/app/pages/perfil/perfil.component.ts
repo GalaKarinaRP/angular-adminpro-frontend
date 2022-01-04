@@ -20,7 +20,7 @@ export class PerfilComponent implements OnInit {
   public perfilForm:FormGroup;
   public usuario:Usuario;
   public imagenSubir:File;
-  public imgTemp: any = null;
+  public imgTemp: string | ArrayBuffer;
 
   constructor( private fb:FormBuilder, 
     private usuarioService: UsuarioService,
@@ -53,24 +53,31 @@ export class PerfilComponent implements OnInit {
     });
   }
 
-  cambiarImagen( file: File){
+  cambiarImagen( file: File){  
+
    this.imagenSubir = file;
+
    if(!file){ 
      return this.imgTemp = null;
-    }
+    }    
 
-   const reader = new FileReader();   
+   const reader = new FileReader(); 
+   
+   reader.readAsDataURL(file); 
 
-   reader.onloadend = () =>{
+   reader.onloadend = () => {
      this.imgTemp = reader.result;
-     console.log( reader.result);     
+     console.log(reader.result);
    }
+    
+   
     
   }
 
   subirImagen(){
     this.fileUploadService.actualizarFoto(this.imagenSubir, 'usuarios',this.usuario.uid )
     .then( img  => {
+      console.log(img);
       this.usuario.img = img;
       Swal.fire('Guardado','Imagen de usuario actualizada,','success');    
     }).catch( err => {
