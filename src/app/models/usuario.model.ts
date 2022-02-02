@@ -23,8 +23,7 @@ export class Usuario {
             return this.img;
         } else  if(this.img){
             return `${ base_url }/upload/usuarios/${this.img}`;
-        } 
-        else{
+        } else{
             return `${ base_url }/upload/usuarios/no-image`;
         }   
       

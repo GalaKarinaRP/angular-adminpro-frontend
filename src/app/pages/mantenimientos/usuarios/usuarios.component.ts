@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
+
 import { Usuario } from 'src/app/models/usuario.model';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { BusquedasService } from 'src/app/services/busquedas.service';
+
+
 
 @Component({
   selector: 'app-usuarios',
@@ -12,10 +17,13 @@ export class UsuariosComponent implements OnInit {
 
   public totalUsuarios: number = 0;
   public usuarios:Usuario []=[];
+  public usuariosTemp:Usuario []=[];
+
   public desde: number = 0;
   public cargando:boolean = true;
 
-  constructor(private usuarioService:UsuarioService) { }
+  constructor(private usuarioService:UsuarioService,
+              private busquedaService:BusquedasService) { }
 
   ngOnInit(): void {
 
@@ -29,6 +37,7 @@ export class UsuariosComponent implements OnInit {
     .subscribe( ({ total, usuarios}) => {
       this.totalUsuarios = total;
       this.usuarios = usuarios;
+      this.usuariosTemp = usuarios;
       this.cargando = false;
       
     });
@@ -44,6 +53,62 @@ export class UsuariosComponent implements OnInit {
      }
 
      this.cargarUsuarios();
+  }
+
+
+  buscar( termino: string){
+
+    if(termino.length === 0)
+    {
+      return this.usuarios = this.usuariosTemp;     
+    }
+    this.busquedaService.buscar('usuarios', termino)
+        .subscribe( resp => {         
+          this.usuarios = resp
+        });
+
+  }
+
+
+  eliminarUsuario( usuario:Usuario ){
+
+    if(usuario.uid === this.usuarioService.uid ){
+      return  Swal.fire(
+        'Error!',
+        `No puede borrarse a si mismo`,
+        'error'
+    );;
+    }
+
+    Swal.fire({
+      title: '¿Borrar usuario?',
+      text: `Estas a punto de borrar al usuario: ${usuario.nombre}`,
+      icon: 'question',
+      showCancelButton: true,    
+      confirmButtonText: 'Si, borrarlo!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+       this.usuarioService.eliminarUsuario(usuario)
+          .subscribe( resp => {
+            this.cargarUsuarios();
+            Swal.fire(
+              'Eliminado!',
+              `${usuario.nombre} fue eliminado correctamente.`,
+              'success'
+          );
+          
+            });         
+        
+        }
+    })
+  }
+
+
+  cambiarRole(usuario:Usuario){
+   this.usuarioService.modificarUsuario(usuario)
+       .subscribe( resp => 
+        console.log(resp));
+
   }
 
 }

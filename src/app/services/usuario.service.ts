@@ -163,6 +163,18 @@ export class UsuarioService {
               );
   }
 
+  eliminarUsuario( usuario:Usuario ){
+    const url = `${ base_url }/usuarios/${usuario.uid}`;
+    return this.http.delete(url,this.headers);
+  }
+
+  modificarUsuario( usuario:Usuario){  
+    
+    return this.http.put(`${ base_url }/usuarios/${usuario.uid}`, usuario, this.headers);
+    
+  }
+
+
   
 
 }
