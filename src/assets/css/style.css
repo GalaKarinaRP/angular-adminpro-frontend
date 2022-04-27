@@ -97,6 +97,10 @@ html body .mdi:before,
 html body .mdi-set {
   line-height: initial; }
 
+.w200{
+  width:200px;
+}
+
 /*******************
 Headings
 *******************/
