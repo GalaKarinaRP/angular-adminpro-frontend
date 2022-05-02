@@ -3,7 +3,7 @@ import { Hospital } from './hospital.model';
 interface _MedicoUser{
     _id:string;
     nombre: string;
-    img?: string;
+    img: string;
 }
 
 
